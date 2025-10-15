@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Risk Assessment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: url('/static/bloodsugar.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(25, 118, 210, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 900px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .info-section {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-section h2 {
+            color: #1976D2;
+            margin-bottom: 1.2rem;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-section h2 i {
+            color: #4CAF50;
+        }
+        
+        .info-section p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+        
+        .info-section ul {
+            list-style-type: none;
+            padding-left: 0.5rem;
+        }
+        
+        .info-section li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .info-section li:before {
+            content: "•";
+            color: #4CAF50;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section h2 {
+            color: #1976D2;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1976D2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(120deg, #1976D2, #4CAF50);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2rem;
+            display: none;
+        }
+        
+        .low-risk {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .high-risk {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-heartbeat"></i> Diabetes Risk Assessment</h1>
+            <p class="subtitle">Check your risk factors and get personalized results</p>
+        </header>
+        
+        <div class="content-wrapper">
+            <div class="info-section">
+                <h2><i class="fas fa-info-circle"></i> Understanding Diabetes</h2>
+                <p>Diabetes is a chronic condition that affects how your body processes blood sugar (glucose). There are two main types:</p>
+                
+                <h2><i class="fas fa-tachometer-alt"></i> Normal Blood Sugar Ranges</h2>
+                <ul>
+                    <li><strong>Fasting:</strong> 70-99 mg/dL (3.9-5.5 mmol/L)</li>
+                    <li><strong>Before meals:</strong> 70-130 mg/dL (3.9-7.2 mmol/L)</li>
+                    <li><strong>After meals (2 hours):</strong> Less than 140 mg/dL (7.8 mmol/L)</li>
+                    <li><strong>HbA1c:</strong> Less than 5.7%</li>
+                </ul>
+                
+                <h2><i class="fas fa-exclamation-triangle"></i> Risk Factors</h2>
+                <ul>
+                    <li>Family history of diabetes</li>
+                    <li>Overweight or obesity</li>
+                    <li>Physical inactivity</li>
+                    <li>High blood pressure</li>
+                    <li>Age over 45</li>
+                    <li>Gestational diabetes during pregnancy</li>
+                </ul>
+            </div>
+            
+            <div class="form-section">
+                <h2><i class="fas fa-clipboard-list"></i> Assessment Form</h2>
+                <form id="diabetesForm">
+                    <div class="form-group">
+                        <label for="pregnancies"><i class="fas fa-baby"></i> Number of pregnancies:</label>
+                        <input type="number" id="pregnancies" name="pregnancies" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="glucose"><i class="fas fa-tint"></i> Glucose level (mg/dL):</label>
+                        <input type="number" id="glucose" name="glucose" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="blood_pressure"><i class="fas fa-heart"></i> Blood pressure (mmHg):</label>
+                        <input type="number" id="blood_pressure" name="blood_pressure" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="skin_thickness"><i class="fas fa-ruler-combined"></i> Skin thickness (mm):</label>
+                        <input type="number" id="skin_thickness" name="skin_thickness" min="0" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="insulin"><i class="fas fa-syringe"></i> Insulin level (mu U/ml):</label>
+                        <input type="number" id="insulin" name="insulin" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bmi"><i class="fas fa-weight"></i> BMI (kg/m²):</label>
+                        <input type="number" id="bmi" name="bmi" min="0" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="diabetes_pedigree"><i class="fas fa-dna"></i> Diabetes pedigree function:</label>
+                        <input type="number" id="diabetes_pedigree" name="diabetes_pedigree" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age"><i class="fas fa-birthday-cake"></i> Age:</label>
+                        <input type="number" id="age" name="age" min="0" max="120" required>
+                    </div>
+                    
+                    <button type="submit"><i class="fas fa-calculator"></i> Calculate Risk</button>
+                </form>
+                
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 Diabetes Risk Assessment Tool | For educational purposes only | Consult your healthcare provider for medical advice</p>
+    </footer>
+
+    <script>
+        document.getElementById('diabetesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real application, you would send this data to a server
+            // and get a prediction from your machine learning model
+            // For this example, we'll simulate a prediction
+            
+            const glucose = parseFloat(document.getElementById('glucose').value);
+            const bmi = parseFloat(document.getElementById('bmi').value);
+            const age = parseFloat(document.getElementById('age').value);
+            
+            // Simple risk calculation for demonstration
+            // This is NOT a real medical assessment
+            let riskScore = 0;
+            
+            if (glucose > 140) riskScore += 30;
+            else if (glucose > 120) riskScore += 20;
+            else if (glucose > 100) riskScore += 10;
+            
+            if (bmi > 30) riskScore += 30;
+            else if (bmi > 25) riskScore += 20;
+            
+            if (age > 50) riskScore += 20;
+            else if (age > 40) riskScore += 10;
+            
+            const resultDiv = document.getElementById('result');
+            
+            if (riskScore > 50) {
+                resultDiv.className = 'high-risk';
+                resultDiv.innerHTML = `
+                    <h3><i class="fas fa-exclamation-triangle"></i> High Risk of Diabetes</h3>
+                    <p>Based on your inputs, you may be at higher risk for diabetes.</p>
+                    <p>Please consult with a healthcare professional for a proper evaluation.</p>
+                `;
+            } else {
+                resultDiv.className = 'low-risk';
+                resultDiv.innerHTML = `
+                    <h3><i class="fas fa-check-circle"></i> Low Risk of Diabetes</h3>
+                    <p>Based on your inputs, you appear to be at lower risk for diabetes.</p>
+                    <p>Continue maintaining a healthy lifestyle with regular check-ups.</p>
+                `;
+            }
+            
+            resultDiv.style.display = 'block';
+            
+            // Scroll to results
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
